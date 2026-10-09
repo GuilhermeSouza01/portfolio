@@ -1,17 +1,42 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #08090a;
+  --color-surface: #0e1012;
+  --color-surface-2: #15181b;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+  --color-fg: #ece9e3;
+  --color-muted: #9a9892;
+  --color-faint: #67655f;
+  --color-accent: #e2a857;
+  --color-accent-strong: #f2c98c;
+  --color-accent-dim: rgba(226, 168, 87, 0.12);
+  --color-on-accent: #17110a;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument), var(--font-inter), ui-sans-serif,
+    sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+
+  --radius-card: 12px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  color-scheme: dark;
+  --dur-fast: 0.15s;
+  --dur: 0.3s;
+  --section-y: clamp(3.5rem, 6vw, 5.5rem);
+}
+
+.section {
+  padding-block: var(--section-y);
 }
 
 html {
   height: 100%;
+  scroll-behavior: smooth;
 }
 
 html,
@@ -24,17 +49,58 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 * {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+}
+
+::selection {
+  background: rgba(226, 168, 87, 0.3);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(226, 168, 87, 0.6);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+section[id],
+footer[id] {
+  scroll-margin-top: 5rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .experience-list:hover .experience-item {
+    opacity: 0.4;
+  }
+
+  .experience-list .experience-item:hover,
+  .experience-list .experience-item:focus-within {
+    opacity: 1;
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  border: 3px solid var(--color-bg);
 }
 
 a {
@@ -42,8 +108,80 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
+.atmosphere-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 72% 62% at 50% 42%,
+    transparent 0%,
+    transparent 42%,
+    #000 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 72% 62% at 50% 42%,
+    transparent 0%,
+    transparent 42%,
+    #000 100%
+  );
+}
+
+.atmosphere-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6rem,
+    #000 calc(100% - 6rem),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6rem,
+    #000 calc(100% - 6rem),
+    transparent
+  );
+}
+
+.marquee-track {
+  width: max-content;
+  will-change: transform;
+  animation: marquee 45s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
   html {
-    color-scheme: dark;
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .marquee-track {
+    animation: marquee 45s linear infinite !important;
   }
 }
